@@ -1,7 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { json, preflight } from '../_shared/cors.ts';
 import { loadOrderBundle } from '../_shared/orders.ts';
-import { finalizeAndNotify, isSoldOut } from '../_shared/finalize.ts';
+import { finalizeAndNotify, isSoldOut, paystackAmountOk } from '../_shared/finalize.ts';
 
 // Paystack reports these while a transfer / USSD / bank payment is still settling.
 const PENDING_STATES = new Set(['ongoing', 'pending', 'processing', 'queued']);
@@ -95,7 +95,7 @@ Deno.serve(async (req) => {
       }
 
       const { data } = result;
-      if (Number(data.amount) !== order.total_ngn * 100) {
+      if (!paystackAmountOk(data, order.total_ngn)) {
         console.error('Amount mismatch for', reference, data.amount, order.total_ngn * 100);
         return json({ error: 'Payment amount did not match the order total' }, 402);
       }

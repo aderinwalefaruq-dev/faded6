@@ -2,6 +2,18 @@ import type { SupabaseClient } from 'npm:@supabase/supabase-js@2';
 import { loadOrderBundle } from './orders.ts';
 import { sendTicketEmail } from './email.ts';
 
+/**
+ * If the Paystack account makes the customer bear transaction fees, `amount` is the price
+ * PLUS Paystack's fee while `requested_amount` is the price we asked for. Accept that case,
+ * but never accept less than the order total.
+ */
+export function paystackAmountOk(data: Record<string, unknown>, totalNgn: number): boolean {
+  const expected = totalNgn * 100;
+  const paid = Number(data.amount);
+  const requested = Number(data.requested_amount ?? data.amount);
+  return requested === expected && paid >= expected;
+}
+
 export function isSoldOut(error: unknown): boolean {
   return String((error as { message?: string })?.message ?? '').includes('SOLD_OUT');
 }

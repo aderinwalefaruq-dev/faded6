@@ -172,6 +172,11 @@ export default function PublicEventPage() {
           .filter(Boolean)
           .join(', ') || 'General admission';
 
+      // The checkout dialog is modal and blocks every click outside itself, including
+      // Paystack's popup. Close it first and bring it back if the payment doesn't finish.
+      setCheckoutOpen(false);
+      await new Promise((resolve) => setTimeout(resolve, 350));
+
       await openPaystackCheckout({
         publicKey,
         email: buyerEmail.trim(),
@@ -195,6 +200,7 @@ export default function PublicEventPage() {
       }
       navigate(firstCode ? `/ticket/${firstCode}` : `/t/${order.reference}`, { replace: true });
     } catch (payError) {
+      setCheckoutOpen(true);
       if (payError instanceof PaymentCancelledError) {
         setFormError('Payment window closed. No ticket was issued.');
         toast.info('Payment cancelled — no ticket was issued.');

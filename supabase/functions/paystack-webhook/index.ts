@@ -1,5 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
-import { finalizeAndNotify, isSoldOut } from '../_shared/finalize.ts';
+import { finalizeAndNotify, isSoldOut, paystackAmountOk } from '../_shared/finalize.ts';
 
 /**
  * Paystack -> server confirmation. This is what issues the ticket when a buyer pays
@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
     if (order.status === 'paid') return ok('already paid');
 
     if (
-      Number(data.amount) !== order.total_ngn * 100 ||
+      !paystackAmountOk(data, order.total_ngn) ||
       String(data.currency ?? 'NGN').toUpperCase() !== 'NGN'
     ) {
       console.error('paystack-webhook: amount/currency mismatch for', reference, data.amount, data.currency);
