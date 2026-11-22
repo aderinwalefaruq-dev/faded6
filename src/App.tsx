@@ -1,0 +1,34 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import IntersectObserver from '@/components/common/IntersectObserver';
+import { Toaster } from '@/components/ui/sonner';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { RouteGuard } from '@/components/common/RouteGuard';
+import NotFound from '@/pages/NotFound';
+
+import { routes } from './routes';
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <AuthProvider>
+        <RouteGuard>
+          <IntersectObserver />
+          <div className="flex min-h-screen flex-col">
+            <main className="flex-grow">
+              <Routes>
+                {routes.map((route) => (
+                  <Route key={route.path} path={route.path} element={route.element} />
+                ))}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+          </div>
+          <Toaster />
+        </RouteGuard>
+      </AuthProvider>
+    </Router>
+  );
+};
+
+export default App;

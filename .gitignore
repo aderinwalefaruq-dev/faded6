@@ -1,0 +1,10 @@
+node_modules
+dist
+.vercel
+.env
+.env.*
+!.env.example
+supabase/.temp
+supabase/functions/.env
+*.log
+.DS_Store

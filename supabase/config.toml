@@ -1,0 +1,32 @@
+project_id = "faded6"
+
+[auth.email]
+enable_confirmations = false
+
+[auth.phone]
+enable_confirmations = false
+
+# Newer Supabase projects use "publishable" keys that are not JWTs, which the
+# platform-level JWT gate rejects. These endpoints are public guest endpoints that
+# validate their own input (scan-ticket checks the host's session itself, and
+# paystack-webhook checks Paystack's signature), so the gate is turned off.
+[functions.create-order]
+verify_jwt = false
+
+[functions.verify-payment]
+verify_jwt = false
+
+[functions.get-order]
+verify_jwt = false
+
+[functions.get-ticket]
+verify_jwt = false
+
+[functions.payment-config]
+verify_jwt = false
+
+[functions.scan-ticket]
+verify_jwt = false
+
+[functions.paystack-webhook]
+verify_jwt = false
