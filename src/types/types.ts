@@ -32,6 +32,7 @@ export interface TicketTier {
   quantity_total: number;
   quantity_sold: number;
   sort_order: number;
+  description: string;
   created_at: string;
 }
 

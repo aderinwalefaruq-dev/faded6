@@ -347,6 +347,11 @@ export default function PublicEventPage() {
                                 {soldOut ? '· Sold out' : `· ${remaining} left`}
                               </span>
                             </p>
+                            {tier.description?.trim() && (
+                              <p className="mt-1.5 whitespace-pre-line text-xs leading-relaxed text-muted-foreground text-pretty">
+                                {tier.description.trim()}
+                              </p>
+                            )}
                           </div>
 
                           {soldOut ? (

@@ -15,13 +15,15 @@ import { naira } from '@/lib/format';
 interface TierDraft {
   key: string;
   name: string;
+  description: string;
   price: string;
   quantity: string;
 }
 
-const newTier = (name = '', price = '', quantity = ''): TierDraft => ({
+const newTier = (name = '', price = '', quantity = '', description = ''): TierDraft => ({
   key: Math.random().toString(36).slice(2),
   name,
+  description,
   price,
   quantity,
 });
@@ -88,6 +90,7 @@ export default function CreateEventPage() {
     const cleanedTiers = tiers
       .map((tier) => ({
         name: tier.name.trim(),
+        description: tier.description.trim().slice(0, 300),
         price_ngn: Math.max(0, Math.round(Number(tier.price || 0))),
         quantity_total: Math.max(0, Math.round(Number(tier.quantity || 0))),
       }))
@@ -335,6 +338,24 @@ export default function CreateEventPage() {
                         className="h-10 px-3"
                       />
                     </div>
+                  </div>
+
+                  <div className="mt-3 flex flex-col gap-1.5">
+                    <Label htmlFor={`tier-desc-${tier.key}`} className="text-xs">
+                      What's included <span className="text-muted-foreground">(optional)</span>
+                    </Label>
+                    <Textarea
+                      id={`tier-desc-${tier.key}`}
+                      value={tier.description}
+                      maxLength={300}
+                      rows={2}
+                      onChange={(event) => updateTier(tier.key, { description: event.target.value })}
+                      placeholder="e.g. Front-row seating, free drink, fast-lane entry"
+                      className="px-3 py-2"
+                    />
+                    <span className="text-[11px] text-muted-foreground">
+                      {tier.description.length}/300
+                    </span>
                   </div>
 
                   <p className="mt-2 text-xs text-muted-foreground">

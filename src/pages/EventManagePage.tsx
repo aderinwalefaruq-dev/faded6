@@ -30,6 +30,7 @@ import { HostShell } from '@/components/layout/HostShell';
 import { StatTile } from '@/components/common/StatTile';
 import { QrCode } from '@/components/tickets/QrCode';
 import { GuestList } from '@/components/events/GuestList';
+import { TierDescriptionsEditor } from '@/components/events/TierDescriptionsEditor';
 import {
   deleteEvent,
   getEventById,
@@ -278,6 +279,22 @@ export default function EventManagePage() {
                 </table>
               </div>
             </section>
+
+            <TierDescriptionsEditor
+              tiers={event.ticket_tiers}
+              onSaved={(tierId, description) =>
+                setEvent((current) =>
+                  current
+                    ? {
+                        ...current,
+                        ticket_tiers: current.ticket_tiers.map((tier) =>
+                          tier.id === tierId ? { ...tier, description } : tier,
+                        ),
+                      }
+                    : current,
+                )
+              }
+            />
 
             <section className="min-w-0 rounded-xl border border-border bg-card shadow-card">
               <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">

@@ -20,7 +20,7 @@ export interface HostEventSummary {
 const EVENT_FIELDS =
   'id, host_id, title, slug, description, event_date, venue, banner_url, status, created_at';
 const TIER_FIELDS =
-  'id, event_id, name, price_ngn, quantity_total, quantity_sold, sort_order, created_at';
+  'id, event_id, name, description, price_ngn, quantity_total, quantity_sold, sort_order, created_at';
 
 export async function listHostEvents(hostId: string): Promise<EventWithTiers[]> {
   const { data, error } = await supabase
@@ -83,7 +83,7 @@ export interface CreateEventInput {
   event_date: string;
   venue: string;
   banner_url: string | null;
-  tiers: { name: string; price_ngn: number; quantity_total: number }[];
+  tiers: { name: string; description: string; price_ngn: number; quantity_total: number }[];
 }
 
 export async function createEvent(input: CreateEventInput): Promise<EventRecord> {
@@ -110,6 +110,7 @@ export async function createEvent(input: CreateEventInput): Promise<EventRecord>
     input.tiers.map((tier, index) => ({
       event_id: event.id,
       name: tier.name,
+      description: tier.description,
       price_ngn: tier.price_ngn,
       quantity_total: tier.quantity_total,
       sort_order: index,
@@ -129,6 +130,14 @@ export async function updateEvent(
   patch: Partial<Pick<EventRecord, 'title' | 'description' | 'event_date' | 'venue' | 'banner_url' | 'status'>>,
 ): Promise<void> {
   const { error } = await supabase.from('events').update(patch).eq('id', eventId);
+  if (error) throw error;
+}
+
+export async function updateTierDescription(tierId: string, description: string): Promise<void> {
+  const { error } = await supabase
+    .from('ticket_tiers')
+    .update({ description })
+    .eq('id', tierId);
   if (error) throw error;
 }
 
