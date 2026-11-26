@@ -1,6 +1,14 @@
 import { useState, type ReactNode } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { CalendarPlus, LayoutGrid, LogOut, Menu, ExternalLink } from 'lucide-react';
+import {
+  CalendarPlus,
+  ExternalLink,
+  LayoutGrid,
+  LogOut,
+  Menu,
+  ShieldCheck,
+  Wallet,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { BrandMark } from '@/components/common/BrandMark';
@@ -10,6 +18,11 @@ import { cn } from '@/lib/utils';
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Overview', icon: LayoutGrid, end: true },
   { to: '/dashboard/events/new', label: 'Create event', icon: CalendarPlus, end: false },
+  { to: '/dashboard/payouts', label: 'Payouts', icon: Wallet, end: false },
+];
+
+const ADMIN_NAV_ITEMS = [
+  { to: '/admin/payouts', label: 'Payout requests', icon: ShieldCheck, end: false },
 ];
 
 function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
@@ -37,7 +50,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
         <p className="px-2 pb-2 text-[11px] uppercase tracking-[0.2em] text-sidebar-foreground/40">
           Hosting
         </p>
-        {NAV_ITEMS.map((item) => (
+        {(profile?.role === 'admin' ? [...NAV_ITEMS, ...ADMIN_NAV_ITEMS] : NAV_ITEMS).map((item) => (
           <NavLink
             key={item.to}
             to={item.to}

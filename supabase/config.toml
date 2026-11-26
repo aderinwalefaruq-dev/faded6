@@ -30,3 +30,6 @@ verify_jwt = false
 
 [functions.paystack-webhook]
 verify_jwt = false
+
+[functions.payout-account]
+verify_jwt = false

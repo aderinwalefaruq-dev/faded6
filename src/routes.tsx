@@ -7,6 +7,8 @@ import EventManagePage from './pages/EventManagePage';
 import PublicEventPage from './pages/PublicEventPage';
 import TicketPage from './pages/TicketPage';
 import ScannerPage from './pages/ScannerPage';
+import PayoutsPage from './pages/PayoutsPage';
+import AdminPayoutsPage from './pages/AdminPayoutsPage';
 import NotFound from './pages/NotFound';
 
 export interface RouteConfig {
@@ -50,6 +52,16 @@ export const routes: RouteConfig[] = [
     name: 'Gate scanner',
     path: '/dashboard/events/:eventId/scanner',
     element: <ScannerPage />,
+  },
+  {
+    name: 'Payouts',
+    path: '/dashboard/payouts',
+    element: <PayoutsPage />,
+  },
+  {
+    name: 'Payout admin',
+    path: '/admin/payouts',
+    element: <AdminPayoutsPage />,
   },
   {
     name: 'Public event',

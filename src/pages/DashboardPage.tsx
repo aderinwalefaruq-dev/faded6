@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { CalendarPlus, Loader2, Ticket, TrendingUp, Users } from 'lucide-react';
+import { CalendarPlus, Loader2, Ticket, TrendingUp, Users, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { HostShell } from '@/components/layout/HostShell';
 import { EventCard } from '@/components/events/EventCard';
@@ -64,12 +64,20 @@ export default function DashboardPage() {
                 Track sales, share links, and open the gate scanner.
               </p>
             </div>
-            <Button asChild className="w-full shrink-0 md:w-auto">
-              <Link to="/dashboard/events/new">
-                <CalendarPlus className="mr-2 h-4 w-4" />
-                Create event
-              </Link>
-            </Button>
+            <div className="flex w-full shrink-0 flex-col gap-2 md:w-auto md:flex-row">
+              <Button asChild variant="secondary" className="w-full md:w-auto">
+                <Link to="/dashboard/payouts">
+                  <Wallet className="mr-2 h-4 w-4" />
+                  Withdraw earnings
+                </Link>
+              </Button>
+              <Button asChild className="w-full md:w-auto">
+                <Link to="/dashboard/events/new">
+                  <CalendarPlus className="mr-2 h-4 w-4" />
+                  Create event
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
