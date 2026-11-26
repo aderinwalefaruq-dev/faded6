@@ -33,3 +33,6 @@ verify_jwt = false
 
 [functions.payout-account]
 verify_jwt = false
+
+[functions.request-payout]
+verify_jwt = false

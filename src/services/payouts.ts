@@ -115,7 +115,10 @@ export async function listMyPayouts(): Promise<PayoutRequest[]> {
 }
 
 export async function requestPayout(amountNgn: number): Promise<void> {
-  const { error } = await supabase.rpc('request_payout', { p_amount: Math.round(amountNgn) });
+  // Goes through an edge function so the admin is emailed about every new request.
+  const { error } = await supabase.functions.invoke('request-payout', {
+    body: { amount: Math.round(amountNgn) },
+  });
   if (error) throw await friendlyError(error);
 }
 
