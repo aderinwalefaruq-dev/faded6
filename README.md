@@ -72,6 +72,23 @@ Deploy. Every push to `main` redeploys. Do **not** put `sk_...` keys in Vercel.
 3. You should land on `/ticket/F6-....` with a QR code. Check Supabase -> Edge Functions -> Logs if not.
 4. Pay again and close the popup right after paying: the ticket should still appear within a minute (webhook), and the order page auto-refreshes.
 
+## Host payouts
+
+Ticket money lands in **your** Paystack account. Hosts withdraw it like this:
+
+1. Host opens **Payouts** in the dashboard, picks their bank and enters their account number (Paystack verifies the account name where it can).
+2. Host requests an amount. Only earnings from events that have **started** are withdrawable, and the service fee is never part of the host's share.
+3. You open **Payout requests** (admin only), send the money from your Paystack dashboard or bank app, then click **Mark as paid** (or **Reject** with a reason).
+
+Make yourself the admin once, in Supabase -> SQL Editor (use the email you sign in with):
+
+```sql
+UPDATE public.profiles SET role = 'admin' WHERE email = 'you@example.com';
+```
+Sign out and back in; "Payout requests" then appears in the sidebar.
+
+Rules live in `supabase/migrations/00008_host_payouts.sql`: minimum payout is 1000 NGN (`min_payout_ngn`), one open request per host, and earnings are held until the event starts (remove the `e.event_date <= now()` condition in `host_payout_balance()` to release them immediately).
+
 ## Troubleshooting
 
 | Symptom | Cause |
@@ -80,6 +97,7 @@ Deploy. Every push to `main` redeploys. Do **not** put `sk_...` keys in Vercel.
 | Popup opens, payment succeeds, no ticket | Wrong/mismatched keys (e.g. `pk_live` with `sk_test`), or webhook URL missing |
 | Function calls fail with "Invalid JWT" | Functions deployed without `config.toml` (redeploy from the project folder) |
 | Refreshing `/e/slug` gives 404 on Vercel | `vercel.json` missing from the repo |
+| Bank list will not load on the Payouts page | `payout-account` function not deployed (`npx supabase functions deploy`) |
 | No emails | `RESEND_API_KEY` unset, or `TICKET_EMAIL_FROM` domain not verified in Resend |
 
 If a log line says `REFUND_NEEDED`, a buyer paid for tickets that sold out in the meantime - refund them from the Paystack dashboard.

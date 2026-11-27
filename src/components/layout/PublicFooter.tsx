@@ -34,7 +34,7 @@ export function PublicFooter() {
               Payments
             </span>
             <span className="text-muted-foreground80">Paystack · NGN</span>
-            <span className="text-muted-foreground80">Flat ₦350 service fee</span>
+            <span className="text-muted-foreground80">5% + ₦175 service fee</span>
           </div>
         </div>
 

@@ -15,6 +15,8 @@ import PageMeta from '@/components/common/PageMeta';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { QrCode as QrImage } from '@/components/tickets/QrCode';
+import { calculateServiceFee } from '@/lib/fees';
+import { naira } from '@/lib/format';
 
 const HERO_IMAGE =
   'https://miaoda-site-img.s3cdn.medo.dev/images/KLing_cf3aa7b6-b8bb-4639-a5ba-ed25e1d11fc3.jpg';
@@ -57,10 +59,14 @@ const FEATURES = [
   },
   {
     icon: BadgeCheck,
-    title: 'One flat fee',
-    body: '₦350 per paid order — not per ticket. Free events pay nothing at all.',
+    title: 'Simple pricing',
+    body: '5% of the ticket total + ₦175 once per paid order. Free events pay nothing at all.',
   },
 ];
+
+// Pricing example shown on the page - computed so it can never drift from the real formula.
+const EXAMPLE_SUBTOTAL = 6000;
+const EXAMPLE_FEE = calculateServiceFee(EXAMPLE_SUBTOTAL);
 
 export default function LandingPage() {
   return (
@@ -114,7 +120,7 @@ export default function LandingPage() {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <BadgeCheck className="h-3.5 w-3.5 text-electric" />
-                    ₦350 flat fee
+                    5% + ₦175 fee
                   </span>
                   <span className="flex items-center gap-1.5">
                     <BadgeCheck className="h-3.5 w-3.5 text-electric" />
@@ -261,26 +267,29 @@ export default function LandingPage() {
                   Simple pricing
                 </p>
                 <h2 className="mt-3 font-display text-xl font-semibold text-balance md:text-3xl">
-                  ₦350 per paid order. That is the whole fee.
+                  5% + ₦175 per paid order. That is the whole fee.
                 </h2>
                 <p className="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground text-pretty">
-                  One ticket or ten, the convenience fee stays flat. Free tickets carry no fee at
-                  all, so community events stay free.
+                  The ₦175 is charged once per order and the 5% scales with the ticket total, so the
+                  fee stays fair on small and big orders alike. Free tickets carry no fee at all,
+                  so community events stay free.
                 </p>
               </div>
 
               <div className="rounded-lg border border-border bg-background p-5">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">2 × ₦3,000 ticket</span>
-                  <span className="font-medium">₦6,000</span>
+                  <span className="font-medium">{naira(EXAMPLE_SUBTOTAL)}</span>
                 </div>
                 <div className="mt-2 flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Service fee</span>
-                  <span className="font-medium">₦350</span>
+                  <span className="font-medium">{naira(EXAMPLE_FEE)}</span>
                 </div>
                 <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
                   <span className="text-sm text-muted-foreground">Total payable</span>
-                  <span className="font-display text-lg font-bold text-electric">₦6,350</span>
+                  <span className="font-display text-lg font-bold text-electric">
+                    {naira(EXAMPLE_SUBTOTAL + EXAMPLE_FEE)}
+                  </span>
                 </div>
               </div>
             </div>

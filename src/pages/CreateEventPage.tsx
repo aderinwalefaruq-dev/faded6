@@ -254,7 +254,7 @@ export default function CreateEventPage() {
               <div className="min-w-0">
                 <h2 className="font-display text-base font-semibold">Ticket tiers</h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Set ₦0 for free tickets. Buyers pay a flat ₦350 fee on paid orders.
+                  Set ₦0 for free tickets. Buyers pay a 5% + ₦175 service fee on paid orders.
                 </p>
               </div>
               <Button
@@ -364,7 +364,7 @@ export default function CreateEventPage() {
                       {naira(Number(tier.price || 0))}
                     </span>{' '}
                     per ticket
-                    {Number(tier.price || 0) > 0 ? ' + ₦350 once per order' : ' · no service fee'}
+                    {Number(tier.price || 0) > 0 ? ' + service fee (5% + ₦175) per order' : ' · no service fee'}
                   </p>
                 </div>
               ))}

@@ -1,6 +1,6 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { json, preflight } from '../_shared/cors.ts';
-import { SERVICE_FEE_NGN } from '../_shared/orders.ts';
+import { calculateServiceFee } from '../_shared/fees.ts';
 import { finalizeAndNotify, isSoldOut } from '../_shared/finalize.ts';
 
 interface IncomingItem {
@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
 
     if (items.length === 0) return json({ error: 'Select at least one ticket' }, 400);
 
-    const serviceFee = subtotal > 0 ? SERVICE_FEE_NGN : 0;
+    const serviceFee = calculateServiceFee(subtotal);
     const total = subtotal + serviceFee;
 
     const secretKey = (Deno.env.get('PAYSTACK_SECRET_KEY') ?? '').trim();

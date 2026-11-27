@@ -28,6 +28,7 @@ import { PublicFooter } from '@/components/layout/PublicFooter';
 import { getEventBySlug } from '@/services/events';
 import { createOrder, getPaymentConfig, verifyPayment, type PaymentConfig } from '@/services/orders';
 import { formatEventDate, formatEventTime, naira } from '@/lib/format';
+import { calculateServiceFee } from '@/lib/fees';
 import {
   envPaystackKey,
   isTestKey,
@@ -37,7 +38,6 @@ import {
 } from '@/lib/paystack';
 import type { EventWithTiers } from '@/types/types';
 
-const SERVICE_FEE = 350;
 
 export default function PublicEventPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -106,7 +106,7 @@ export default function PublicEventPage() {
     }, 0);
   }, [event, selected]);
 
-  const serviceFee = subtotal > 0 ? SERVICE_FEE : 0;
+  const serviceFee = calculateServiceFee(subtotal);
   const total = subtotal + serviceFee;
   // The server's key is the source of truth: it is the one that matches the secret key
   // used to verify payments. The build-time key is only a fallback.
@@ -320,7 +320,7 @@ export default function PublicEventPage() {
               <div className="rounded-xl border border-border bg-card p-4 shadow-card md:sticky md:top-24 md:p-5">
                 <h2 className="font-display text-base font-semibold">Choose your tickets</h2>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  A flat ₦350 service fee applies once per paid order.
+                  A service fee of 5% + ₦175 applies once per paid order.
                 </p>
 
                 <div className="mt-4 flex flex-col gap-3">

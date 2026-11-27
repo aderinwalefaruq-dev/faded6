@@ -3,7 +3,7 @@
 ## 1. Application Overview
 Faded6 (tagline: \"Faded6 Ticket Platform\") is a mobile-first event ticketing web application tailored for Nigerian nightlife, concerts, and campus events (currency: NGN / ₦). The platform features a high-contrast dark mode aesthetic (deep matte black `#0A0A0C`, slate borders, and electric accent highlights) optimized for fast on-the-go interaction.
 
-Faded6 allows Event Hosts to register, configure dynamic ticket tiers, manage inventory and sales metrics, access a unified guest list with manual check-in and CSV export, generate official \"Faded6 Instant Gate Pass\" walk-up QR posters, and verify tickets at venue doors using an in-browser QR camera scanner. Ticket Buyers can purchase tickets without creating an account, pay via the production Paystack inline checkout with an automatic flat ₦350 platform service fee on paid orders, and instantly receive scannable digital QR tickets with unique `F6-` prefixed backup codes both on-screen (redirecting to `/ticket/[ticket-code]`) and via email.
+Faded6 allows Event Hosts to register, configure dynamic ticket tiers, manage inventory and sales metrics, access a unified guest list with manual check-in and CSV export, generate official \"Faded6 Instant Gate Pass\" walk-up QR posters, and verify tickets at venue doors using an in-browser QR camera scanner. Ticket Buyers can purchase tickets without creating an account, pay via the production Paystack inline checkout with an automatic platform service fee (5% of the ticket subtotal + ₦175) on paid orders, and instantly receive scannable digital QR tickets with unique `F6-` prefixed backup codes both on-screen (redirecting to `/ticket/[ticket-code]`) and via email.
 
 ## 2. User Roles & Use Cases
 
@@ -13,7 +13,7 @@ Faded6 allows Event Hosts to register, configure dynamic ticket tiers, manage in
 
 ### 2.2 Core Use Cases
 - **Host Account & Event Setup:** Host registers/logs in, submits event details and ticket tiers, and retrieves shareable public URLs and printable Faded6 Instant Gate Pass walk-up purchase QR posters.
-- **Event Discovery & Ticket Purchase:** Attendee views event details, selects ticket quantities, reviews price breakdown including the flat ₦350 fee for paid orders, enters full name and email, and completes Paystack payment.
+- **Event Discovery & Ticket Purchase:** Attendee views event details, selects ticket quantities, reviews price breakdown including the 5% + ₦175 service fee for paid orders, enters full name and email, and completes Paystack payment.
 - **Ticket Issuance & Receipt:** Upon Paystack payment confirmation, system writes ticket records to backend database, decrements inventory, generates unique `F6-` prefixed ticket codes, automatically redirects to `/ticket/[ticket-code]`, and sends a confirmation email.
 - **Guest List Management & Door Verification:** Host monitors attendee roster via the Guest List tab, performs manual check-in or camera-based QR scanning, filters and searches attendees, and exports guest data as CSV.
 
@@ -77,7 +77,7 @@ Faded6 Ticket Platform
 
 #### 3.2.6 Checkout & Payment Summary Page
 - **Buyer Form Validation:** Requires Buyer Full Name and a valid format Email Address before permitting payment initiation.
-- **Order Fee Breakdown:** Displays Itemized Ticket Subtotal, Platform Service Fee (flat ₦350 per paid order; ₦0 for free orders), and Total Payable in NGN.
+- **Order Fee Breakdown:** Displays Itemized Ticket Subtotal, Platform Service Fee (5% of the subtotal + ₦175 per paid order, rounded to the nearest naira; ₦0 for free orders), and Total Payable in NGN.
 - **Paystack Key Configuration & Error Handling:** App loads the Paystack public key via client environment configuration `VITE_PAYSTACK_PUBLIC_KEY` with server-provided fallback. If the public key is missing or invalid, an on-screen error banner is rendered and payment initiation is blocked to prevent silent failures.
 - **Paystack Inline Payment Flow:**
   - Paid orders initiate official Paystack inline popup checkout with total amount converted from Naira to Kobo (Total NGN * 100), currency NGN, unique transaction reference prefixed with `F6_`, and metadata containing Buyer Name, Buyer Email, Event ID, and Ticket Tier.
@@ -93,7 +93,7 @@ Faded6 Ticket Platform
 ## 4. Business Rules & Core Logic
 
 ### 4.1 Fee & Pricing Calculation Rules
-1. Paid Ticket Orders: Total Payable (NGN) = (Sum of all selected Tier Prices * Quantities) + ₦350.
+1. Paid Ticket Orders: Total Payable (NGN) = Subtotal + Service Fee, where Subtotal = sum of all selected Tier Prices * Quantities and Service Fee = round(5% * Subtotal) + ₦175.
 2. Free Ticket Orders: Total Payable (NGN) = ₦0 (Platform service fee is ₦0).
 3. Paystack Transaction Amount: Total Payable in NGN * 100 (converted to Kobo).
 
@@ -127,7 +127,7 @@ Faded6 Ticket Platform
 
 1. Checkout page validates presence of valid Paystack public key from `VITE_PAYSTACK_PUBLIC_KEY` (or server fallback) and displays an error banner if missing or invalid.
 2. Checkout form enforces required full name and valid email before launching Paystack popup.
-3. Paid orders calculate Total = (Price * Quantity) + ₦350 and send amount in Kobo (Total * 100) to Paystack with NGN currency, while free orders complete at ₦0.
+3. Paid orders calculate Total = Subtotal + round(5% * Subtotal) + ₦175 and send amount in Kobo (Total * 100) to Paystack with NGN currency, while free orders complete at ₦0.
 4. Successful Paystack payment writes ticket records to backend database with all order details, Paystack reference, `is_checked_in = false`, and unique `F6-` codes for unauthenticated guest buyers.
 5. Upon successful ticket write, the buyer is automatically redirected to `/ticket/[ticket-code]` to view and download digital tickets with QR codes.
 6. Host Event Management Dashboard includes a Unified Guest List tab displaying Buyer Name, Email, Tier, `F6-` Code, Amount Paid, Reference, and Check-In badge.

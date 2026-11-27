@@ -160,7 +160,7 @@ export default function LoginPage() {
             <p className="mt-2 text-sm text-muted-foreground text-pretty">
               {mode === 'signin'
                 ? 'Manage events, track sales, and open the gate scanner.'
-                : 'Free to start. You only pay the flat ₦350 fee when you sell a paid ticket.'}
+                : 'Free to start. Buyers pay a 5% + ₦175 service fee on paid orders; free events cost nothing.'}
             </p>
 
             <div className="mt-6 grid grid-cols-2 gap-1 rounded-lg bg-muted p-1">

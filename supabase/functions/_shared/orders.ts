@@ -1,6 +1,5 @@
 import type { SupabaseClient } from 'npm:@supabase/supabase-js@2';
 
-export const SERVICE_FEE_NGN = 350;
 
 export interface OrderBundle {
   order: Record<string, unknown>;
